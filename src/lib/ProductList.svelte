@@ -10,9 +10,20 @@
   }
 
   function modifyQuantity(index, q) {
+    let item = $items[index]    
+    if (q === -1 && item.unidades < 2) return
     $items[index].unidades += q;
   }
+
+  function handleKey(e) {
+    if (e.key != '+' && e.key != '-') return
+    if (e.key == '+') modifyQuantity($items.length - 1, 1)
+    else if (e.key == '-') modifyQuantity($items.length - 1, -1)
+    
+  }
 </script>
+
+<svelte:window on:keydown={handleKey}/>
 
 {#each $items as item, idx (idx)}
   <ProductItem

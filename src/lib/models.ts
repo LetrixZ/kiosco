@@ -11,7 +11,7 @@ import sequelize from "$lib/db"
 import Sequelize from "sequelize"
 
 export const ProdTable = sequelize.define("producto", {
-  id: {
+  Id: {
     type: Sequelize.INTEGER,
     primaryKey: true
   },
