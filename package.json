@@ -11,10 +11,11 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
-    "@sveltejs/adapter-node": "^1.0.0-next.55",
     "@sveltejs/adapter-netlify": "^1.0.0-next.35",
+    "@sveltejs/adapter-node": "^1.0.0-next.55",
     "@sveltejs/kit": "next",
     "@types/mysql": "^2.15.19",
+    "@types/sequelize": "^4.28.10",
     "autoprefixer": "^10.3.7",
     "cssnano": "^5.0.8",
     "postcss": "^8.3.9",
@@ -35,6 +36,8 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "pg": "^8.7.1",
+    "sequelize": "^6.11.0",
+    "sequelize-cockroachdb": "^6.0.3",
     "svelte-fa": "^2.4.0"
   }
 }

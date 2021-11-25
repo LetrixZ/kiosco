@@ -1,17 +1,23 @@
-import dbConnection from "$lib/db"
+import { ProdTable } from "$lib/models"
+import Sequelize from "sequelize"
 
 export async function get(request) {
   try {
     const searchQuery = request.query.get('q')
     if (searchQuery) {
-      const results = await dbConnection('producto').where('nombre', 'like', `%${searchQuery}%`)
-      console.log(results.length);
+      const results = await ProdTable.findAll({
+        where: {
+          nombre: {
+            [Sequelize.Op.iLike]: `%${searchQuery}%`
+          }
+        }
+      })
       return {
         status: 200,
         body: results
       }
     }
-    const products = await dbConnection.select().from('producto')
+    const products = await ProdTable.findAll()
     return {
       status: 200,
       body: products

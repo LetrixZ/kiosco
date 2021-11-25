@@ -41,7 +41,7 @@
           if (!it.Id) {
             return;
           }
-          it.unidades = 1;
+          it.unidades = 1;          
           $itemList = [...$itemList, it];
         } else {
           if (res.status === 404) error = `${code} no encontrado`;
@@ -51,37 +51,21 @@
     }
   }
 
-  const add = async () => {
+  const add = () => {
     barcode = "7790290000523";
-    await addItem(barcode);
+    addItem(barcode);
     barcode = "9002490100070";
-    await addItem(barcode);
+    addItem(barcode);
     barcode = "7790580103422";
-    await addItem(barcode);
+    addItem(barcode);
     barcode = "7790290000523";
-    await addItem(barcode);
+    addItem(barcode);
     barcode = "9002490100070";
-    await addItem(barcode);
+    addItem(barcode);
     barcode = "7790580103422";
-    await addItem(barcode);
+    addItem(barcode);
     barcode = "7790895000997";
-    await addItem(barcode);
-    barcode = "7790895641534";
-    await addItem(barcode);
-    barcode = "7790040534704";
-    await addItem(barcode);
-    barcode = "7790895641534";
-    await addItem(barcode);
-    barcode = "7790290000523";
-    await addItem(barcode);
-    barcode = "9002490100070";
-    await addItem(barcode);
-    barcode = "7790580103422";
-    await addItem(barcode);
-    barcode = "7790895000997";
-    await addItem(barcode);
-    barcode = "7790895641534";
-    await addItem(barcode);
+    addItem(barcode);
   };
 
   function dismissResults() {
@@ -91,7 +75,7 @@
   onMount(async () => {
     // search("fernet");
     add();
-  });
+  });  
 
   $: {
     if ($itemList.length > 0) {

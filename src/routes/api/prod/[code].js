@@ -1,9 +1,9 @@
-import dbConnection from "$lib/db"
+import { ProdTable } from "$lib/models"
 
 export async function get(request) {
   try {
     const barcode = request.params.code
-    const product = await dbConnection.where('codigoprod', barcode).select().from('producto').first()
+    const product = await ProdTable.findOne({ where: { codigoprod: barcode } })
     if (product) {
       return {
         status: 200,
@@ -19,7 +19,8 @@ export async function get(request) {
     return {
       status: 500,
       body: {
-        error: 'Ha ocurrido un error'
+        error: 'Ha ocurrido un error',
+        msg: e
       }
     }
   }
