@@ -25,7 +25,7 @@
 >
   <span class="w-14 text-right">{idx + 1}</span>
   <span class="w-full select-text font-semibold">{item.nombre}</span>
-  <span class="w-64 text-center">${item.preciofinal}</span>
+  <span class="w-64 text-center">${Number(item.preciofinal)}</span>
   <span
     class="w-80 text-center flex items-center justify-center gap-x-4"
     tabindex="0"
@@ -39,7 +39,7 @@
     >
     {item.unidades}
     <button
-      class="text-xs text-green-500 p-1 hover:text-green-100 transition-all"
+      class="text-xs text-green-500 p-1 hover:text-green-300 transition-all"
       on:click={() => {
         modifyQuantity(+1);
       }}><Fa icon={faPlus} /></button
