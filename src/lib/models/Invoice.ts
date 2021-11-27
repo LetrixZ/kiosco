@@ -1,7 +1,7 @@
 import { Table, Column, Model, HasMany, DataType } from 'sequelize-typescript'
 import { Line, LineTable } from '$lib/models/Line'
 
-interface Invoice {
+export interface Invoice {
   date: Date
   lines: Line[]
 }

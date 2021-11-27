@@ -1,4 +1,4 @@
-<script lang="typescript">
+<script lang="ts">
   import ProductItem from "./ProductListItem.svelte";
   import { itemList, itemList as items } from "$lib/store";
 
@@ -16,13 +16,13 @@
   }
 
   function handleKey(e) {
-    if (e.key != "+" && e.key != "-") return;
+    // if (e.key != "+" && e.key != "-" && e.key != "*") return;
     // if (e.key == '+') modifyQuantity($items.length - 1, 1)
     // else if (e.key == '-') modifyQuantity($items.length - 1, -1)
-    e.preventDefault();
+    // e.preventDefault();
   }
 
-  $: totalPrice = $itemList.length > 0 ? $itemList.map((it) => it.price * it.units).reduce((p, n) => p + n) : 0;
+  $: totalPrice = $itemList.length > 0 ? $itemList.map((it) => it.price * it.units).reduce((p, n) => p + n)?.toFixed(2) : 0;
 </script>
 
 <svelte:window on:keydown={handleKey} />

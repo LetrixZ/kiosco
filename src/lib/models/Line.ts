@@ -3,6 +3,7 @@ import { Product, ProductTable } from '$lib/models/Product'
 import { Table, Column, Model, HasMany, DataType, BelongsTo, ForeignKey, HasOne } from 'sequelize-typescript'
 
 export interface Line {
+  id?: number
   price: number
   units: number
   number: number

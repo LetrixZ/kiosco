@@ -7,7 +7,8 @@
     "package": "svelte-kit package",
     "preview": "svelte-kit preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "init": "node .\\db\\init.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
@@ -31,10 +32,13 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@sveltejs/svelte-virtual-list": "^3.0.1",
     "dotenv": "^10.0.0",
+    "moment": "^2.29.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.11.0",
     "sequelize-typescript": "^2.1.1",
-    "svelte-fa": "^2.4.0"
+    "sqlite3": "^5.0.2",
+    "svelte-fa": "^2.4.0",
+    "svelte-tiny-virtual-list": "^1.1.7"
   }
 }

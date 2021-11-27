@@ -21,10 +21,10 @@
   export let idx;
 </script>
 
-<li class="flex text-2xl" transition:slide={{ duration: 150 }}>
-  <span class="w-[2%] text-center py-0.5">{idx + 1}</span>
+<li class="flex text-2xl items-center" transition:slide={{ duration: 150 }}>
+  <span class="w-[2%] text-center py-1">{idx + 1}</span>
   <span class="w-[60%] select-text font-semibold" class:no-name={!item.name}>{item.name ? item.name : "sin nombre"}</span>
-  <span class="w-[15%] text-center">${Number(item.price)}</span>
+  <span class="w-[15%] text-center">${item.price.toFixed(2)}</span>
   <span class="w-[10%] text-center flex items-center justify-center gap-x-4">
     <button
       tabindex="-1"
@@ -43,7 +43,7 @@
       }}><Fa icon={faPlus} /></button
     >
   </span>
-  <span class="w-[15%] text-center  font-semibold">${item.price * item.units}</span>
+  <span class="w-[15%] text-center  font-semibold">${(item.price * item.units).toFixed(2)}</span>
   <span class="w-[2%]">
     <button tabindex="-1" class="text-red-600 text-sm p-1 hover:text-red-300 transition-all" on:click={deleteItem}><Fa icon={faTimes} /></button>
   </span>
@@ -60,7 +60,10 @@
   .no-name {
     @apply text-gray-700 font-normal italic;
   }
+  li {
+    @apply border-t border-black border-opacity-25;
+  }
   li span {
-    @apply border-t border-black border-opacity-25 px-2;
+    @apply px-2;
   }
 </style>

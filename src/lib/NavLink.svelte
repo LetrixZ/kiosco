@@ -11,10 +11,10 @@
 
 <style lang="postcss">
   a {
-    @apply text-lg font-medium uppercase
+    @apply text-lg font-normal uppercase
   }
 
   a.active {
-    @apply font-bold
+    @apply font-medium
   }
 </style>

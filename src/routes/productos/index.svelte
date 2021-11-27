@@ -65,7 +65,8 @@
     const index = items.indexOf(selectedItem);
     let res = await fetch("/api/prod/" + selectedItem.barcode, { method: "PUT", body: JSON.stringify(selectedItem) });
     if (res.ok) {
-      items[index] = await res.json();
+      const item = await res.json()
+      items[index] = item.data;
     }
     showAlert("update");
   }

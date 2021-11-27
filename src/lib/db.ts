@@ -14,8 +14,12 @@ const sequelize = new Sequelize(POSTGRES_URI, {
   timezone: '-03:00',
 })
 
-sequelize.addModels([ProductTable, InvoiceTable, LineTable]);
+// const sequelize = new Sequelize({
+//   dialect: 'sqlite',
+//   storage: 'db/kiosco.sqlite',
+//   logging: console.log
+// })
 
-// LineTable.sync({alter: true})
+sequelize.addModels([ProductTable, InvoiceTable, LineTable]);
 
 export default sequelize
