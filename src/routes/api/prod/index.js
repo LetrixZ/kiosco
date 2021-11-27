@@ -1,13 +1,14 @@
-import { ProdTable } from "$lib/models"
+import sequelize from '$lib/db'
+import { ProductTable } from '$lib/models/Product'
 import Sequelize from "sequelize"
 
 export async function get(request) {
   try {
     const searchQuery = request.query.get('q')
     if (searchQuery) {
-      const results = await ProdTable.findAll({
+      const results = await ProductTable.findAll({
         where: {
-          nombre: {
+          name: {
             [Sequelize.Op.iLike]: `%${searchQuery}%`
           }
         }
@@ -17,7 +18,7 @@ export async function get(request) {
         body: results
       }
     }
-    const products = await ProdTable.findAll()
+    const products = await ProductTable.findAll()
     return {
       status: 200,
       body: products

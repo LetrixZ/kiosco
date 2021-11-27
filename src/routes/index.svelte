@@ -1,23 +1,25 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { fade, slide } from "svelte/transition";
-  import type { Prod } from "$lib/models";
-  import ProductList from "$lib/ProductList.svelte";
+  import ProductList from "$lib/ventas/ProductList.svelte";
   import { itemList } from "$lib/store";
-  import SearchResults from "$lib/SearchResults.svelte";
+  import SearchResults from "$lib/ventas/SearchResults.svelte";
+  import Fa from "svelte-fa/src/fa.svelte";
+  import { faTimes, faTimesCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import type { Product } from "$lib/models/Product";
 
   let barcode = "";
   let error = null;
   let totalPrice = 0;
-  let itemsResult: Prod[] = null;
+  let searchResults = null;
   async function search(query) {
     if (query.length > 2) {
-      itemsResult = null;
+      searchResults = null;
       const res = await fetch("/api/prod?q=" + query);
       if (res.ok) {
         const results = await res.json();
         if (results.length) {
-          itemsResult = results;
+          searchResults = results;
         } else {
           error = "No hay resultados";
         }
@@ -37,11 +39,12 @@
         const res = await fetch("/api/prod/" + code);
         if (res.ok) {
           error = null;
-          const it: Prod = await res.json();
-          if (!it.Id) {
+          const it = await res.json();
+          console.log(it);
+          if (!it.id) {
             return;
           }
-          it.unidades = 1;          
+          it.units = 1;
           $itemList = [...$itemList, it];
         } else {
           if (res.status === 404) error = `${code} no encontrado`;
@@ -49,90 +52,117 @@
         code = "";
       }
     }
+    barcode = "";
   }
 
-  const add = () => {
-    barcode = "7790290000523";
-    addItem(barcode);
-    barcode = "9002490100070";
-    addItem(barcode);
-    barcode = "7790580103422";
-    addItem(barcode);
-    barcode = "7790290000523";
-    addItem(barcode);
-    barcode = "9002490100070";
-    addItem(barcode);
-    barcode = "7790580103422";
-    addItem(barcode);
-    barcode = "7790895000997";
-    addItem(barcode);
-  };
+  onDestroy(() => {
+    $itemList = [];
+  });
+
+  let input;
+  $: {
+    $itemList;
+    focusInput();
+  }
+
+  function focusInput() {
+    input?.focus();
+  }
 
   function dismissResults() {
-    itemsResult = null;
+    searchResults = null;
+    focusInput();
   }
-
-  onMount(async () => {
-    // search("fernet");
-    add();
-  });  
 
   $: {
     if ($itemList.length > 0) {
-      totalPrice = $itemList
-        .map((it) => it.preciofinal * it.unidades)
-        .reduce((p, n) => p + n);
+      totalPrice = $itemList.map((it) => it.price * it.units).reduce((p, n) => p + n);
     } else {
       totalPrice = 0;
     }
   }
+
+  let modalAdd = false;
+  let priceInput, nameInput, unitsInput;
+  let newItem = { price: null, name: "", units: 1 };
+
+  function addPrice(item) {
+    const product: Product = { name: item.name, barcode: null, price: item.price, units: item.units };
+    $itemList = [...$itemList, product];
+    modalAdd = false;
+    newItem = { price: null, name: "", units: 1 };
+  }
+
+  $: {
+    if (modalAdd) {
+      priceInput?.focus();
+    }
+  }
+
+  function handleKey(e) {
+    if (modalAdd) {
+      if (e.key === "Enter") {
+        if (document.activeElement == priceInput) {
+          e.preventDefault();
+          priceInput.blur();
+          unitsInput.focus();
+        } else if (document.activeElement == unitsInput) {
+          e.preventDefault();
+          unitsInput.blur();
+          nameInput.focus();
+        }
+      } else if (e.key === "Escape") {
+        modalAdd = false;
+        focusInput();
+      }
+    }
+    if (searchResults) {
+      if (e.key === "Escape") {
+        dismissResults();
+      }
+    }
+    if (e.key !== "+") return;
+    if (e.key === "+") modalAdd = true;
+    e.preventDefault();
+  }
 </script>
+
+<svelte:window on:keydown={handleKey} />
 
 <main class="w-full">
   <div class="w-[80vw] lg:w-[70vw] mx-auto py-12">
     <form on:submit|preventDefault={() => addItem(barcode)}>
-      <input class="rounded w-full p-1 text-2xl" bind:value={barcode} />
+      <input class="round w-full p-1 text-2xl" bind:value={barcode} bind:this={input} tabindex="0" />
     </form>
     {#if error}
       <div transition:fade={{ duration: 100 }}>
         <div class="relative">
-          <div
-            class="absolute bg-red-500 w-full rounded py-1 px-2 mt-1 text-white text-center text-xl"
-          >
+          <div class="absolute bg-red-500 w-full rounded py-1 px-2 mt-1 text-white text-center text-xl">
             {error}
           </div>
         </div>
       </div>
     {/if}
-    {#if itemsResult}
+    {#if modalAdd}
+      <div transition:slide={{ duration: 100 }}>
+        <div class="w-full bg-yellow-100 border border-black border-opacity-20 shadow my-2 p-2 rounded">
+          <form on:submit|preventDefault={() => addPrice(newItem)} class="flex gap-x-1">
+            <input bind:value={newItem.price} bind:this={priceInput} placeholder="Precio" required type="number" class="pl-1 rounded py-1" />
+            <input bind:value={newItem.units} bind:this={unitsInput} placeholder="Unidades" required type="number" class="pl-1 rounded py-1" />
+            <input bind:value={newItem.name} bind:this={nameInput} placeholder="Nombre" type="text" class="pl-1 rounded py-1" />
+            <button class="bg-red-500 text-white p-1 px-3 rounded" type="submit">Agregar</button>
+            <button class="bg-red-500 text-white p-1 px-3 rounded" type="button" on:click={() => (modalAdd = false)}><Fa icon={faTimes} /></button>
+          </form>
+        </div>
+      </div>
+    {/if}
+    {#if searchResults}
       <div transition:slide={{ duration: 250 }}>
-        <SearchResults
-          items={itemsResult}
-          on:add={(e) => addItem(e.detail.barcode)}
-          on:dismiss={() => dismissResults()}
-        />
+        <SearchResults items={searchResults} on:add={(e) => addItem(e.detail.barcode)} on:dismiss={() => dismissResults()} />
       </div>
     {/if}
     <div class="mt-14" />
-    <div>
-      <ul class="select-none">
-        <li class="flex gap-x-4 text-lg items-end border-b border-black mb-2">
-          <span class="w-14" />
-          <span class="w-full">Producto</span>
-          <span class="w-64 text-center">Precio unitario</span>
-          <span class="w-52 text-center">Unidades</span>
-          <span class="w-64 text-center">Precio total</span>
-          <span class="w-14" />
-        </li>
-        <ProductList />
-        <li
-          class="flex gap-x-4 text-5xl font-bold justify-between border-t border-black py-2 px-4"
-        >
-          <span>Precio total</span>
-          <span>${totalPrice}</span>
-        </li>
-      </ul>
-    </div>
+    <ProductList />
   </div>
 </main>
 
@@ -145,11 +175,5 @@
   }
   button:disabled {
     @apply text-gray-600 opacity-50 pointer-events-none;
-  }
-  input {
-    @apply border-2 border-black border-opacity-30 transition-all;
-  }
-  input:focus {
-    @apply border-2 border-green-600 outline-none;
   }
 </style>
