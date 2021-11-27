@@ -103,8 +103,8 @@
     unitsInput: null,
     unitsValue: null,
     add() {
-      $itemList[$itemList.length - 1].units = this.unitsValue
-      this.show = false
+      $itemList[$itemList.length - 1].units = this.unitsValue;
+      this.show = false;
     },
   };
 
@@ -140,10 +140,13 @@
         dismissResults();
       }
     }
-    if (e.key === "+") modalAdd = true;
+    if (e.key === "+") {
+      modalAdd = true;
+      e.preventDefault();
+    }
     if (e.key === "*") {
       modalUnits.show = true;
-      modalUnits.unitsValue = null
+      modalUnits.unitsValue = null;
       e.preventDefault();
     }
   }
@@ -202,7 +205,7 @@
         <div class="w-full bg-yellow-100 border border-black border-opacity-20 shadow my-2 p-2 rounded">
           <form on:submit|preventDefault={() => addPrice(newItem)} class="flex gap-x-1">
             <input bind:value={newItem.price} bind:this={priceInput} placeholder="Precio" required type="number" class="pl-1 rounded py-1" />
-            <input bind:value={newItem.units} bind:this={unitsInput} placeholder="Unidades" required type="number" class="pl-1 rounded py-1" />
+            <input bind:value={newItem.units} on:focus="{() => unitsInput.select()}" bind:this={unitsInput} placeholder="Unidades" required type="number" class="pl-1 rounded py-1" />
             <input bind:value={newItem.name} bind:this={nameInput} placeholder="Nombre" type="text" class="pl-1 rounded py-1" />
             <button class="bg-red-500 text-white p-1 px-3 rounded" type="submit">Agregar</button>
             <button class="bg-red-500 text-white p-1 px-3 rounded" type="button" on:click={() => (modalAdd = false)}><Fa icon={faTimes} /></button>

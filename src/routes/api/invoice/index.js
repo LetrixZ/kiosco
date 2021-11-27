@@ -35,7 +35,6 @@ export async function post(request) {
   try {
     if (request.body) {
       const { date, lines } = JSON.parse(request.body)
-      console.log(date, lines);
       if (date && lines) {
         const transaction = await sequelize.transaction()
         const invoiceRow = await InvoiceTable.create({ date }, { transaction })
@@ -49,7 +48,6 @@ export async function post(request) {
             }
             const lineRow = await LineTable.create({ invoiceId, productId, price, units, number }, { transaction })
           }
-          console.log('Commit');
           await transaction.commit()
           return {
             status: 200

@@ -8,7 +8,7 @@
 
 <script lang="ts">
   import VirtualList from "@sveltejs/svelte-virtual-list";
-  import { faPlus } from "@fortawesome/free-solid-svg-icons";
+  import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa/src/fa.svelte";
   import { fade, slide } from "svelte/transition";
@@ -29,6 +29,8 @@
     listInput?.focus();
   });
 
+  let deletePrompt = { show: false };
+
   async function upsertItem(e) {
     if (selectedItem) {
       switch (e.submitter.value) {
@@ -38,6 +40,9 @@
         case "create":
           create();
           break;
+        case "delete_prompt":
+          delPrompt();
+          break;
         case "delete":
           del();
           break;
@@ -45,7 +50,12 @@
     }
   }
 
+  function delPrompt() {
+    deletePrompt.show = true;
+  }
+
   async function del() {
+    deletePrompt.show = false
     const res = await fetch("/api/prod/" + selectedItem.barcode, { method: "DELETE" });
     if (res.ok) {
       items = items.filter((it) => it.barcode !== selectedItem.barcode);
@@ -65,7 +75,7 @@
     const index = items.indexOf(selectedItem);
     let res = await fetch("/api/prod/" + selectedItem.barcode, { method: "PUT", body: JSON.stringify(selectedItem) });
     if (res.ok) {
-      const item = await res.json()
+      const item = await res.json();
       items[index] = item.data;
     }
     showAlert("update");
@@ -164,30 +174,33 @@
         {#if selectedItem}
           <form on:submit|preventDefault={upsertItem}>
             <div class="product text-lg flex flex-col items-end gap-y-2">
-              <div class="flex">
+              <div class="flex fg">
                 <span>Codigo de barras</span>
                 <input type="text" bind:value={selectedItem.barcode} />
               </div>
-              <div class="flex">
+              <div class="flex fg">
                 <span>Nombre</span>
                 <input bind:value={selectedItem.name} />
               </div>
-              <div class="flex">
+              <div class="flex fg">
                 <span>Descripción del producto</span>
                 <textarea bind:value={selectedItem.description} />
               </div>
-              <div class="flex">
+              <div class="flex fg">
                 <span>Precio de costo</span>
                 <input bind:value={selectedItem.cost} />
               </div>
-              <div class="flex">
+              <div class="flex fg">
                 <span>Precio final</span>
                 <input bind:value={selectedItem.price} />
               </div>
-              <div class="flex">
-                {#if !isNew}
+              <div class="flex gap-x-2 font-semibold">
+                {#if deletePrompt.show}
+                  <button class="bg-red-500 text-white rounded px-2 py-1 flex-1" value="delete">Confirmar eliminacion</button>
+                  <button class="bg-gray-700 text-white rounded px-2 py-1" type="button" on:click="{() => deletePrompt.show = false}"><Fa icon={faTimes}/></button>
+                {:else if !isNew}
                   <button class="bg-yellow-500 text-white rounded px-2 py-1" value="update">Actualizar</button>
-                  <button class="bg-red-500 text-white rounded px-2 py-1" value="delete">Eliminar</button>
+                  <button class="bg-red-500 text-white rounded px-2 py-1" value="delete_prompt">Eliminar</button>
                 {:else}
                   <button class="bg-indigo-500 text-white rounded px-2 py-1" value="create">Crear</button>
                 {/if}
@@ -231,7 +244,11 @@
     @apply text-right font-medium w-40;
   }
 
-  .product .flex {
+  .product .flex.fg {
     @apply gap-x-4;
+  }
+
+  .font-semibold button {
+    @apply font-semibold;
   }
 </style>
