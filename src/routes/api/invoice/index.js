@@ -11,7 +11,7 @@ export async function get(request) {
     const end = request.query.get('end')
     const invoices = await InvoiceTable.findAll({
       include: [{ model: LineTable, include: [{ model: ProductTable }] }],
-      limit: 1000,
+      order: [['date', 'DESC']],
       where: {
         date: {
           [Sequelize.Op.gte]: moment(start).toDate(),

@@ -20,18 +20,19 @@
   let totalPrice;
 
   $: {
-    totalPrice = item.lines.map((it) => it.price).reduce((prev, cur) => prev + cur);
+    if (item.lines.length > 0) totalPrice = item.lines.map((it) => it.price).reduce((prev, cur) => prev + cur);
+    else totalPrice = 0
   }
 </script>
 
 <div class="text-lg mx-2 my-1">
   <div class="w-full bg-yellow-200 p-2 flex gap-x-2 items-center cursor-pointer hover:bg-red-300 rounded font-medium" on:click={click}>
     <span>
-      {date.format("HH")}:{date.format("mm")}
+      {date.format("HH:mm")}
     </span>
     -
     <span class="flex-1">
-      {date.day()}/{date.month()}/{date.year()}
+      {date.format("DD/MM/YYYY")}
     </span>
     <span class="mx-auto">Total: ${totalPrice} </span>
   </div>

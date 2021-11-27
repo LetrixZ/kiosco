@@ -58,6 +58,7 @@
 
   onMount(() => {
     focusInput();
+    console.log(new Date());    
   });
 
   onDestroy(() => {

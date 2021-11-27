@@ -31,12 +31,16 @@
   import type { Invoice } from "$lib/models/Invoice";
   import Fa from "svelte-fa/src/fa.svelte";
   import { fade, slide } from "svelte/transition";
+  import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
 
   export let date;
 
   let itemList: Invoice[] = [];
 
-  $: filteredList = itemList?.sort((a, b) => moment(a.date).milliseconds() - moment(b.date).milliseconds());
+  let sortType = "desc";
+
+  // $: filteredList = sortType === "desc" ? itemList?.sort((a, b) => new Date(b.date) - new Date(a.date)) : itemList.sort((a, b) => new Date(a.date) - new Date(b.date));
+
 
   async function send() {
     const query = new URLSearchParams();
@@ -65,28 +69,31 @@
 
   $: selectedItem = itemList?.[selectedIndex];
 
+  $: console.log(selectedItem);
+  
+
   onMount(() => send());
 
   function select(e) {
     selectedIndex = e.detail.index;
   }
 
-  $: totalPrice = selectedItem?.lines.map((it) => it.price).reduce((prev, cur) => prev + cur);
+  $: totalPrice = selectedItem?.lines.length > 0 ? selectedItem?.lines.map((it) => it.price).reduce((prev, cur) => prev + cur) : 0;
 
   function handleKey(e) {
-    if (e.key !== "Escape") return
+    if (e.key !== "Escape") return;
 
     if (e.key === "Escape") {
-      selectedIndex = null
+      selectedIndex = null;
     }
   }
 </script>
 
-<svelte:window on:keydown="{handleKey}"/>
+<svelte:window on:keydown={handleKey} />
 
 <div class="mt-10 flex flex-col gap-y-4 h-full">
-  <div class="flex justify-center items-center gap-x-8">
-    <form on:submit|preventDefault={send}>
+  <form on:submit|preventDefault={send}>
+    <div class="flex justify-center items-center gap-x-4">
       <label>
         Desde
         <input type="date" bind:value={date.start} />
@@ -98,8 +105,8 @@
       </label>
 
       <button>Enviar</button>
-    </form>
-  </div>
+    </div>
+  </form>
   <Alert bind:this={alertComponent} />
   {#if selectedItem}
     <div transition:fade={{ duration: 100 }} class="fixed inset-0 z-10  bg-black bg-opacity-20 p-20">
@@ -153,7 +160,7 @@
     </div>
   {/if}
   <div class="w-[80%] mx-auto  h-[80%]">
-    <VirtualList items={filteredList} let:item let:index>
+    <VirtualList items={itemList} let:item let:index>
       <ListItem {item} {index} on:click={select} />
     </VirtualList>
   </div>
