@@ -80,6 +80,12 @@ LineTable.init({
 LineTable.belongsTo(ProductTable, { onDelete: 'CASCADE', foreignKey: 'productId' })
 InvoiceTable.hasMany(LineTable)
 
+async function createTables() {
+  await ProductTable.sync({ force: true }) 
+  await InvoiceTable.sync({ force: true })
+  await LineTable.sync({ force: true })
+}
+
 async function insertProducts() {
   console.log('PRODUCTS INSERT STARTED');
   // await ProductTable.sync({ force: true })
@@ -102,15 +108,12 @@ async function insertProducts() {
     return a;
   }, {});
   console.log(filtered.filter(e => lookup[e.barcode]));
-  await ProductTable.sync({ force: true })
   await ProductTable.bulkCreate(filtered);
   console.log('PRODUCTS INSERT FINISHED');
 }
 
 async function insertInvoicesLines() {
   console.log('INVOICES INSERT STARTED');
-  await InvoiceTable.sync({ force: true })
-  await LineTable.sync({ force: true })
   const invoices = JSON.parse((await fs.readFile('db/factura.json')).toString()).factura
   const lines = JSON.parse((await fs.readFile('db/linea.json')).toString()).linea
   const products = JSON.parse((await fs.readFile('db/producto.json')).toString()).producto
@@ -136,6 +139,7 @@ async function insertInvoicesLines() {
 }
 
 async function init() {
+  await createTables()
   await insertProducts()
   await insertInvoicesLines()
 }

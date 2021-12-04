@@ -5,7 +5,7 @@
 </script>
 
 <!-- svelte-ignore a11y-missing-attribute -->
-<a {...$$props} class:active={isActive}>
+<a {...$$props} class:active={isActive } tabindex="-1">
   <slot />
 </a>
 

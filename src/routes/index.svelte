@@ -41,7 +41,6 @@
         if (res.ok) {
           error = null;
           const it = await res.json();
-          console.log(it);
           if (!it.id) {
             return;
           }
@@ -58,7 +57,6 @@
 
   onMount(() => {
     focusInput();
-    console.log(new Date());    
   });
 
   onDestroy(() => {
@@ -150,6 +148,10 @@
       modalUnits.unitsValue = null;
       e.preventDefault();
     }
+    if (e.key === "F7") {
+      e.preventDefault();
+      finish()
+    }
   }
 
   let alertStatus = { show: false, type: "", msg: "" };
@@ -188,9 +190,12 @@
 <svelte:window on:keydown={handleKey} />
 
 <main class="w-full">
+  <div class="px-20 py-12 absolute">
+    <button class="button text-xl" on:click={() => $itemList = []}>Nuevo</button>
+  </div>
   <div class="w-[80vw] lg:w-[70vw] mx-auto py-12">
     <form on:submit|preventDefault={() => addItem(barcode)}>
-      <input class="round w-full p-1 text-2xl" bind:value={barcode} bind:this={input} tabindex="0" />
+      <input class="round w-full p-1 text-2xl" bind:value={barcode} bind:this={input} tabindex="0"/>
     </form>
     {#if error}
       <div transition:fade={{ duration: 100 }}>

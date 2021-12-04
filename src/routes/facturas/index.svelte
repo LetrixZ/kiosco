@@ -67,10 +67,7 @@
 
   let selectedIndex;
 
-  $: selectedItem = itemList?.[selectedIndex];
-
-  $: console.log(selectedItem);
-  
+  $: selectedItem = itemList?.[selectedIndex];  
 
   onMount(() => send());
 

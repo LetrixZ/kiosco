@@ -29,7 +29,6 @@ export async function get(request) {
 
 export async function post(request) {
   try {
-    console.log(request.body);
     if (request.body) {
       const { name, description, cost, price, barcode, stock } = JSON.parse(request.body)
       const row = await ProductTable.create({ name, description, cost, price, barcode, stock })
