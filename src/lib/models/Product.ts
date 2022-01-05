@@ -1,6 +1,7 @@
 import { Table, Column, Model, HasMany, DataType, BelongsTo, ForeignKey, HasOne, Unique, AllowNull } from 'sequelize-typescript'
 
 interface _Product {
+  id?: number
   barcode: string
   name: string
   description?: string

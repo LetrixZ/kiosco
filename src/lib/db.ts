@@ -7,18 +7,12 @@ dotenv.config()
 
 const { POSTGRES_URI } = process.env
 
-const sequelize = new Sequelize(POSTGRES_URI, {
+const sequelize = new Sequelize("postgresql://postgres:1234@localhost:5432/kiosko", {
   logging: false, dialectOptions: {
     useUTC: false, // for reading from database
   },
   timezone: '-03:00',
 })
-
-// const sequelize = new Sequelize({
-//   dialect: 'sqlite',
-//   storage: 'db/kiosco.sqlite',
-//   logging: console.log
-// })
 
 sequelize.addModels([ProductTable, InvoiceTable, LineTable]);
 

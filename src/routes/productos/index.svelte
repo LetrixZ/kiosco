@@ -155,9 +155,9 @@
 </script>
 
 <main class="w-full">
-  <div class="w-[80vw] mx-auto">
-    <div class="mt-20 text flex gap-x-20">
-      <div class="flex flex-col gap-y-2 justify-center w-[50%]">
+  <div class="w-full mx-auto">
+    <div class="mt-20 text flex px-12">
+      <div class="flex flex-col gap-y-2 justify-center w-[50vw]">
         <form on:submit|preventDefault={createItem}>
           <div class="flex items-stretch">
             <input class="border text-xl py-1 px-2 w-full rounded-none outline-none border-black transition-all" bind:value={searchText} bind:this={listInput} type="text" />
@@ -170,7 +170,7 @@
           </VirtualList>
         </ul>
       </div>
-      <div class="w-1/3">
+      <div class="w-[50vw]">
         {#if selectedItem}
           <form on:submit|preventDefault={upsertItem}>
             <div class="product text-lg flex flex-col items-end gap-y-2">
